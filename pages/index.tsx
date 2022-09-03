@@ -139,7 +139,10 @@ export default function Home() {
         return true
       })
 
-      return filtered
+      const ordered = filtered.sort((a, b) => {
+        return a.vol <= b.vol ? 1 : -1
+      })
+      return ordered
     }
   }, [filters, collections])
 
@@ -171,142 +174,142 @@ export default function Home() {
             sx={{
               flexDirection: "column",
               padding: "0 1.6rem",
-              gap: "1.6rem",
             }}
           >
-            <Label
-              sx={{
-                flexDirection: "column",
-                gap: ".8rem",
-              }}
-            >
-              Floor Price
-              {/* <Slider
-                onChange={(e) => {
-                  console.log(e.currentTarget.value)
-                }}
-              /> */}
-              <Flex
-                sx={{
-                  alignItems: "center",
-                  gap: ".8rem",
-                }}
-              >
-                <Input
-                  onChange={(e) => {
-                    setFilters((prev) => {
-                      return {
-                        ...prev,
-                        floor: [Number(e.target.value), prev.floor[1]],
-                      }
-                    })
-                  }}
-                  placeholder="Min"
-                />
-                <Input
-                  onChange={(e) => {
-                    setFilters((prev) => {
-                      return {
-                        ...prev,
-                        floor: [prev.floor[0], Number(e.target.value)],
-                      }
-                    })
-                  }}
-                  placeholder="Max"
-                />
-              </Flex>
-            </Label>
-            <Label
-              sx={{
-                flexDirection: "column",
-                gap: ".8rem",
-              }}
-            >
-              Volume 7d
-              {/* <Slider
-                onChange={(e) => {
-                  console.log(e.currentTarget.value)
-                }}
-              /> */}
-              <Flex
-                sx={{
-                  alignItems: "center",
-                  gap: ".8rem",
-                }}
-              >
-                <Input
-                  onChange={(e) => {
-                    setFilters((prev) => {
-                      return {
-                        ...prev,
-                        volume: [Number(e.target.value), prev.volume[1]],
-                      }
-                    })
-                  }}
-                  placeholder="Min"
-                />
-                <Input
-                  onChange={(e) => {
-                    setFilters((prev) => {
-                      return {
-                        ...prev,
-                        volume: [prev.volume[0], Number(e.target.value)],
-                      }
-                    })
-                  }}
-                  placeholder="Max"
-                />
-              </Flex>
-            </Label>
+            <Heading variant="heading2">Filters</Heading>
+            <Text mb="1.6rem">
+              Selected filters:{" "}
+              {filters &&
+                `
+              ${filters.floor[0]} - ${filters.floor[1]}
+            `}
+            </Text>
 
-            <Label
+            <Flex
               sx={{
                 flexDirection: "column",
-                gap: ".8rem",
+                gap: "1.6rem",
               }}
             >
-              Volume Total
-              {/* <Slider
-                onChange={(e) => {
-                  console.log(e.currentTarget.value)
-                }}
-              /> */}
-              <Flex
+              <Label
                 sx={{
-                  alignItems: "center",
+                  flexDirection: "column",
                   gap: ".8rem",
                 }}
               >
-                <Input
-                  onChange={(e) => {
-                    setFilters((prev) => {
-                      return {
-                        ...prev,
-                        volumetotal: [
-                          Number(e.target.value),
-                          prev.volumetotal[1],
-                        ],
-                      }
-                    })
+                Floor Price
+                <Flex
+                  sx={{
+                    alignItems: "center",
+                    gap: ".8rem",
                   }}
-                  placeholder="Min"
-                />
-                <Input
-                  onChange={(e) => {
-                    setFilters((prev) => {
-                      return {
-                        ...prev,
-                        volumetotal: [
-                          prev.volumetotal[0],
-                          Number(e.target.value),
-                        ],
-                      }
-                    })
+                >
+                  <Input
+                    onBlur={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          floor: [Number(e.target.value), prev.floor[1]],
+                        }
+                      })
+                    }}
+                    placeholder="Min"
+                  />
+                  <Input
+                    onBlur={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          floor: [prev.floor[0], Number(e.target.value)],
+                        }
+                      })
+                    }}
+                    placeholder="Max"
+                  />
+                </Flex>
+              </Label>
+              <Label
+                sx={{
+                  flexDirection: "column",
+                  gap: ".8rem",
+                }}
+              >
+                Volume 7d
+                <Flex
+                  sx={{
+                    alignItems: "center",
+                    gap: ".8rem",
                   }}
-                  placeholder="Max"
-                />
-              </Flex>
-            </Label>
+                >
+                  <Input
+                    onBlur={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          volume: [Number(e.target.value), prev.volume[1]],
+                        }
+                      })
+                    }}
+                    placeholder="Min"
+                  />
+                  <Input
+                    onBlur={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          volume: [prev.volume[0], Number(e.target.value)],
+                        }
+                      })
+                    }}
+                    placeholder="Max"
+                  />
+                </Flex>
+              </Label>
+
+              <Label
+                sx={{
+                  flexDirection: "column",
+                  gap: ".8rem",
+                }}
+              >
+                Volume Total
+                <Flex
+                  sx={{
+                    alignItems: "center",
+                    gap: ".8rem",
+                  }}
+                >
+                  <Input
+                    onBlur={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          volumetotal: [
+                            Number(e.target.value),
+                            prev.volumetotal[1],
+                          ],
+                        }
+                      })
+                    }}
+                    placeholder="Min"
+                  />
+                  <Input
+                    onBlur={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          volumetotal: [
+                            prev.volumetotal[0],
+                            Number(e.target.value),
+                          ],
+                        }
+                      })
+                    }}
+                    placeholder="Max"
+                  />
+                </Flex>
+              </Label>
+            </Flex>
           </Flex>
           <Flex
             sx={{
@@ -317,58 +320,107 @@ export default function Home() {
           >
             <Heading variant="heading2">Popular collections</Heading>
             {reduced && (
-              <Text>Found {reduced && reduced.length} collections: </Text>
+              <Text mb="1.6rem">
+                Found {reduced && reduced.length} collections:{" "}
+              </Text>
             )}
 
-            {reduced &&
-              reduced.map((collection) => {
-                const { collectionSymbol, name, tokenCount, image, info } =
-                  collection
+            <Flex
+              sx={{
+                flexDirection: "column",
+                maxHeight: "80vh",
+                overflowY: "scroll",
+              }}
+            >
+              {reduced &&
+                reduced.map((collection) => {
+                  const {
+                    collectionSymbol,
+                    name,
+                    tokenCount,
+                    image,
+                    info,
+                    vol,
+                    totalVol,
+                  } = collection
 
-                return (
-                  <Flex
-                    sx={{
-                      alignItems: "center",
-                      alignSelf: "stretch",
-                      gap: "1.6rem",
-                      padding: ".8rem",
-                      borderBottom: "1px solid",
-                      borderColor: "primary",
-                      borderRadius: ".4rem",
-                    }}
-                    key={collectionSymbol}
-                  >
-                    <img
+                  return (
+                    <Flex
                       sx={{
-                        maxWidth: "4rem",
+                        alignItems: "center",
+                        alignSelf: "stretch",
+                        gap: "1.6rem",
+                        padding: ".8rem",
+                        borderBottom: "1px solid",
+                        borderColor: "primary",
+                        borderRadius: ".4rem",
                       }}
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://via.placeholder.com/320x320"
-                      }}
-                      src={image}
-                    />
-                    <Text>{name}</Text>
-                    <Text>{tokenCount}</Text>
-                    {info?.discord && (
-                      <Text>
-                        <a href={info?.discord}>
-                          {" "}
-                          <DiscordIcon />
-                        </a>
-                      </Text>
-                    )}
-                    {info?.twitter && (
-                      <Text>
-                        <a href={info?.twitter}>
-                          {" "}
-                          <TwitterIcon />
-                        </a>
-                      </Text>
-                    )}
-                  </Flex>
-                )
-              })}
+                      key={collectionSymbol}
+                    >
+                      <img
+                        sx={{
+                          maxWidth: "4rem",
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://via.placeholder.com/320x320"
+                        }}
+                        src={image}
+                      />
+                      <Flex
+                        sx={{
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Text>{name}</Text>
+                        <Text>{tokenCount}</Text>
+                      </Flex>
+
+                      <Flex
+                        sx={{
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Text>{vol.toFixed(0).toLocaleLowerCase()}</Text>
+                        <Text>{totalVol.toFixed(0).toLocaleLowerCase()}</Text>
+                      </Flex>
+                      {info?.discord && (
+                        <Text>
+                          <a href={info?.discord}>
+                            {" "}
+                            <DiscordIcon />
+                          </a>
+                        </Text>
+                      )}
+                      {info?.twitter && (
+                        <Text>
+                          <a href={info?.twitter}>
+                            {" "}
+                            <TwitterIcon />
+                          </a>
+                        </Text>
+                      )}
+                      {info?.categories &&
+                        info.categories.map(
+                          (category) =>
+                            category && (
+                              <Text
+                                sx={{
+                                  backgroundColor: "primary",
+                                  border: "1px solid",
+                                  borderRadius: ".4rem",
+                                  color: "background",
+                                  padding: ".2rem .4rem",
+                                }}
+                              >
+                                {category}
+                              </Text>
+                            )
+                        )}
+                    </Flex>
+                  )
+                })}
+            </Flex>
             {isLoading && (
               <LoadingIcon
                 sx={{
