@@ -2,7 +2,7 @@
 import Head from "next/head"
 
 import { Heading, Text, Label, Flex, Input, Slider } from "@theme-ui/components"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { LoadingIcon } from "@/components/icons/LoadingIcon"
 
 import infos from "public/infos_reduced.json"
@@ -53,15 +53,18 @@ type PopularCollectionWithInfo = PopularCollection & {
   info: CollectionInfoApiResponse
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
+const LAMPORTS_PER_SOL = 1000000000
 
+const INITIAL_FILTERS = {
+  floor: [null, null],
+  volume: [null, null],
+  volumetotal: [null, null],
+}
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
-  const [collections, setCollections] = useState<
-    PopularCollectionWithInfo[] | PopularCollection[]
-  >(null)
+  const [collections, setCollections] =
+    useState<PopularCollectionWithInfo[]>(null)
+  const [filters, setFilters] = useState(INITIAL_FILTERS)
 
   const fetchCollections = useCallback(async () => {
     try {
@@ -94,6 +97,52 @@ export default function Home() {
     fetchCollections()
   }, [fetchCollections])
 
+  const reduced = useMemo(() => {
+    if (collections) {
+      const filtered = collections.filter((collection) => {
+        if (filters.floor[0]) {
+          if (collection.fp / LAMPORTS_PER_SOL < filters.floor[0]) {
+            return false
+          }
+        }
+
+        if (filters.floor[1]) {
+          if (collection.fp / LAMPORTS_PER_SOL >= filters.floor[1]) {
+            return false
+          }
+        }
+
+        if (filters.volume[0]) {
+          if (collection.vol < filters.volume[0]) {
+            return false
+          }
+        }
+
+        if (filters.volume[1]) {
+          if (collection.vol >= filters.volume[1]) {
+            return false
+          }
+        }
+
+        if (filters.volumetotal[0]) {
+          if (collection.totalVol < filters.volumetotal[0]) {
+            return false
+          }
+        }
+
+        if (filters.volumetotal[1]) {
+          if (collection.totalVol >= filters.volumetotal[1]) {
+            return false
+          }
+        }
+
+        return true
+      })
+
+      return filtered
+    }
+  }, [filters, collections])
+
   return (
     <>
       <main
@@ -102,7 +151,7 @@ export default function Home() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          maxWidth: "128rem",
+          maxWidth: "96rem",
           margin: "0 auto",
           marginTop: "4rem",
           gap: "3.2rem",
@@ -112,17 +161,15 @@ export default function Home() {
           Filter Solana NFT Collections
         </Heading>
 
-        {isLoading && <LoadingIcon />}
-
         <Flex
           sx={{
             gap: "3.2rem",
+            alignSelf: "stretch",
           }}
         >
           <Flex
             sx={{
               flexDirection: "column",
-              flex: "1 16rem",
               padding: "0 1.6rem",
               gap: "1.6rem",
             }}
@@ -134,19 +181,39 @@ export default function Home() {
               }}
             >
               Floor Price
-              <Slider
+              {/* <Slider
                 onChange={(e) => {
                   console.log(e.currentTarget.value)
                 }}
-              />
+              /> */}
               <Flex
                 sx={{
                   alignItems: "center",
                   gap: ".8rem",
                 }}
               >
-                <Input placeholder="From" />
-                <Input placeholder="To" />
+                <Input
+                  onChange={(e) => {
+                    setFilters((prev) => {
+                      return {
+                        ...prev,
+                        floor: [Number(e.target.value), prev.floor[1]],
+                      }
+                    })
+                  }}
+                  placeholder="Min"
+                />
+                <Input
+                  onChange={(e) => {
+                    setFilters((prev) => {
+                      return {
+                        ...prev,
+                        floor: [prev.floor[0], Number(e.target.value)],
+                      }
+                    })
+                  }}
+                  placeholder="Max"
+                />
               </Flex>
             </Label>
             <Label
@@ -156,19 +223,39 @@ export default function Home() {
               }}
             >
               Volume 7d
-              <Slider
+              {/* <Slider
                 onChange={(e) => {
                   console.log(e.currentTarget.value)
                 }}
-              />
+              /> */}
               <Flex
                 sx={{
                   alignItems: "center",
                   gap: ".8rem",
                 }}
               >
-                <Input placeholder="From" />
-                <Input placeholder="To" />
+                <Input
+                  onChange={(e) => {
+                    setFilters((prev) => {
+                      return {
+                        ...prev,
+                        volume: [Number(e.target.value), prev.volume[1]],
+                      }
+                    })
+                  }}
+                  placeholder="Min"
+                />
+                <Input
+                  onChange={(e) => {
+                    setFilters((prev) => {
+                      return {
+                        ...prev,
+                        volume: [prev.volume[0], Number(e.target.value)],
+                      }
+                    })
+                  }}
+                  placeholder="Max"
+                />
               </Flex>
             </Label>
 
@@ -179,19 +266,45 @@ export default function Home() {
               }}
             >
               Volume Total
-              <Slider
+              {/* <Slider
                 onChange={(e) => {
                   console.log(e.currentTarget.value)
                 }}
-              />
+              /> */}
               <Flex
                 sx={{
                   alignItems: "center",
                   gap: ".8rem",
                 }}
               >
-                <Input placeholder="From" />
-                <Input placeholder="To" />
+                <Input
+                  onChange={(e) => {
+                    setFilters((prev) => {
+                      return {
+                        ...prev,
+                        volumetotal: [
+                          Number(e.target.value),
+                          prev.volumetotal[1],
+                        ],
+                      }
+                    })
+                  }}
+                  placeholder="Min"
+                />
+                <Input
+                  onChange={(e) => {
+                    setFilters((prev) => {
+                      return {
+                        ...prev,
+                        volumetotal: [
+                          prev.volumetotal[0],
+                          Number(e.target.value),
+                        ],
+                      }
+                    })
+                  }}
+                  placeholder="Max"
+                />
               </Flex>
             </Label>
           </Flex>
@@ -199,13 +312,16 @@ export default function Home() {
             sx={{
               flexDirection: "column",
               flex: "1 auto",
+              alignSelf: "stretch",
             }}
           >
             <Heading variant="heading2">Popular collections</Heading>
-            <Text>Found {collections && collections.length} collections: </Text>
+            {reduced && (
+              <Text>Found {reduced && reduced.length} collections: </Text>
+            )}
 
-            {collections &&
-              collections.map((collection) => {
+            {reduced &&
+              reduced.map((collection) => {
                 const { collectionSymbol, name, tokenCount, image, info } =
                   collection
 
@@ -213,6 +329,7 @@ export default function Home() {
                   <Flex
                     sx={{
                       alignItems: "center",
+                      alignSelf: "stretch",
                       gap: "1.6rem",
                       padding: ".8rem",
                       borderBottom: "1px solid",
@@ -252,6 +369,13 @@ export default function Home() {
                   </Flex>
                 )
               })}
+            {isLoading && (
+              <LoadingIcon
+                sx={{
+                  margin: "3.2rem auto",
+                }}
+              />
+            )}
           </Flex>
         </Flex>
       </main>
