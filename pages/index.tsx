@@ -7,6 +7,7 @@ import { LoadingIcon } from "@/components/icons/LoadingIcon"
 
 import infos from "public/infos_reduced.json"
 import { DiscordIcon, TwitterIcon } from "@/components/icons"
+import DataTable, { TableColumn, TableRow } from "react-data-table-component"
 
 /** Magic Eden Popular Collections API type */
 type PopularCollection = {
@@ -60,6 +61,108 @@ const INITIAL_FILTERS = {
   volume: [null, null],
   volumetotal: [null, null],
 }
+
+const columns = [
+  {
+    name: "",
+    cell: (row) => (
+      <img
+        sx={{
+          maxWidth: "4rem",
+        }}
+        onError={(e) => {
+          e.currentTarget.src = "https://via.placeholder.com/320x320"
+        }}
+        src={row.image}
+      />
+    ),
+  },
+  {
+    name: "Name",
+    minWidth: "24rem",
+    cell: (row) => (
+      <Flex
+        sx={{
+          justifyContent: "center",
+          flexDirection: "column",
+          minHeight: "1.6rem",
+          alignSelf: "stretch",
+        }}
+      >
+        <Text>
+          {row.name.length > 25 ? row.name.substring(0, 25) + "..." : row.name}
+        </Text>
+        <Text>{row.tokenCount}</Text>
+      </Flex>
+    ),
+  },
+  {
+    name: "Volume",
+    sortable: true,
+    selector: (row) => row.vol,
+    cell: (row) => (
+      <Flex
+        sx={{
+          justifyContent: "center",
+          flexDirection: "column",
+          alignSelf: "stretch",
+        }}
+      >
+        <Text>{row.vol.toFixed(0)}</Text>
+        <Text>{row.totalVol.toFixed(0)}</Text>
+      </Flex>
+    ),
+  },
+  {
+    name: "Socials",
+    cell: (row) => (
+      <Flex
+        sx={{
+          justifyContent: "center",
+        }}
+      >
+        {row.info?.discord && (
+          <Text>
+            <a href={row.info?.discord}>
+              {" "}
+              <DiscordIcon />
+            </a>
+          </Text>
+        )}
+        {row.info?.twitter && (
+          <Text>
+            <a href={row.info?.twitter}>
+              {" "}
+              <TwitterIcon />
+            </a>
+          </Text>
+        )}
+      </Flex>
+    ),
+  },
+  {
+    minWidth: "24rem",
+    cell: (row) =>
+      row.info?.categories &&
+      row.info.categories.map(
+        (category) =>
+          category && (
+            <Text
+              sx={{
+                backgroundColor: "primary",
+                border: "1px solid",
+                borderRadius: ".4rem",
+                color: "background",
+                padding: ".2rem .4rem",
+              }}
+            >
+              {category}
+            </Text>
+          )
+      ),
+  },
+]
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [collections, setCollections] =
@@ -158,6 +261,7 @@ export default function Home() {
           margin: "0 auto",
           marginTop: "4rem",
           gap: "3.2rem",
+          padding: "0 1.6rem",
         }}
       >
         <Heading mb=".8rem" variant="heading1">
@@ -168,12 +272,13 @@ export default function Home() {
           sx={{
             gap: "3.2rem",
             alignSelf: "stretch",
+            flexDirection: "column",
           }}
         >
           <Flex
             sx={{
               flexDirection: "column",
-              padding: "0 1.6rem",
+              maxWidth: "24rem",
             }}
           >
             <Heading variant="heading2">Filters</Heading>
@@ -332,7 +437,13 @@ export default function Home() {
                 overflowY: "scroll",
               }}
             >
-              {reduced &&
+              <DataTable
+                columns={columns}
+                data={reduced}
+                theme="dark"
+                pagination
+              />
+              {/* {reduced &&
                 reduced.map((collection) => {
                   const {
                     collectionSymbol,
@@ -419,7 +530,7 @@ export default function Home() {
                         )}
                     </Flex>
                   )
-                })}
+                })} */}
             </Flex>
             {isLoading && (
               <LoadingIcon
