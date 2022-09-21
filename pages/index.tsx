@@ -173,7 +173,7 @@ export default function Home() {
     try {
       setIsLoading(true)
       const raw = await fetch(
-        "https://stats-mainnet.magiceden.io/collection_stats/popular_collections/sol?limit=1000&window=30d"
+        "https://stats-mainnet.magiceden.io/collection_stats/popular_collections/sol?limit=1000&window=7d"
       )
 
       const popularCollections: PopularCollection[] = await raw.json()
