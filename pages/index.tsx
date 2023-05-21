@@ -90,7 +90,11 @@ const columns = [
         }}
       >
         <Text>
-          {row.name.length > 25 ? row.name.substring(0, 25) + "..." : row.name}
+          <a href={`https://magiceden.io/marketplace/${row.collectionSymbol}`}>
+            {row.name.length > 25
+              ? row.name.substring(0, 25) + "..."
+              : row.name}
+          </a>
         </Text>
         <Text>{row.tokenCount}</Text>
       </Flex>
@@ -173,11 +177,12 @@ export default function Home() {
     try {
       setIsLoading(true)
       const raw = await fetch(
-        "https://stats-mainnet.magiceden.io/collection_stats/popular_collections/sol?limit=1000&window=7d"
+        "https://stats-mainnet.magiceden.io/collection_stats/popular_collections/sol?limit=1000&window=30d"
       )
 
       const popularCollections: PopularCollection[] = await raw.json()
 
+      console.log(popularCollections)
       const popularCollectionsWithInfo = popularCollections.map(
         (collection) => {
           const { collectionSymbol } = collection
@@ -339,7 +344,7 @@ export default function Home() {
                   gap: ".8rem",
                 }}
               >
-                Volume 7d
+                Volume 30d
                 <Flex
                   sx={{
                     alignItems: "center",
