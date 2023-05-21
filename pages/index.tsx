@@ -167,6 +167,8 @@ const columns = [
   },
 ]
 
+const daysIntervalVolumeFilter = "30d"
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [collections, setCollections] =
@@ -177,7 +179,7 @@ export default function Home() {
     try {
       setIsLoading(true)
       const raw = await fetch(
-        "https://stats-mainnet.magiceden.io/collection_stats/popular_collections/sol?limit=1000&window=30d"
+        `https://stats-mainnet.magiceden.io/collection_stats/popular_collections/sol?limit=1000&window=${daysIntervalVolumeFilter}`
       )
 
       const popularCollections: PopularCollection[] = await raw.json()
@@ -344,7 +346,7 @@ export default function Home() {
                   gap: ".8rem",
                 }}
               >
-                Volume 30d
+                Volume {daysIntervalVolumeFilter}
                 <Flex
                   sx={{
                     alignItems: "center",
